@@ -151,7 +151,7 @@ router.put('/change-password', authenticateToken, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-router.post('/follow/:id', auth, async (req, res) => {
+router.post('/follow/:id', authenticateToken, async (req, res) => {
   const userId = req.user.id;
   const targetId = req.params.id;
 
@@ -180,7 +180,7 @@ router.post('/follow/:id', auth, async (req, res) => {
 });
 
 // Unfollow a user
-router.post('/unfollow/:id', auth, async (req, res) => {
+router.post('/unfollow/:id', authenticateToken, async (req, res) => {
   const userId = req.user.id;
   const targetId = req.params.id;
 
