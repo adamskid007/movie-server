@@ -151,56 +151,5 @@ router.put('/change-password', authenticateToken, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-router.post('/follow/:id', authenticateToken, async (req, res) => {
-  const userId = req.user.id;
-  const targetId = req.params.id;
-
-  if (userId === targetId) return res.status(400).json({ message: "You can't follow yourself." });
-
-  try {
-    const user = await User.findById(userId);
-    const target = await User.findById(targetId);
-
-    if (!user || !target) return res.status(404).json({ message: 'User not found' });
-
-    if (!user.following.includes(targetId)) {
-      user.following.push(targetId);
-      await user.save();
-    }
-
-    if (!target.followers.includes(userId)) {
-      target.followers.push(userId);
-      await target.save();
-    }
-
-    res.json({ message: 'Followed successfully' });
-  } catch (err) {
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Unfollow a user
-router.post('/unfollow/:id', authenticateToken, async (req, res) => {
-  const userId = req.user.id;
-  const targetId = req.params.id;
-
-  try {
-    const user = await User.findById(userId);
-    const target = await User.findById(targetId);
-
-    user.following = user.following.filter(id => id.toString() !== targetId);
-    target.followers = target.followers.filter(id => id.toString() !== userId);
-
-    await user.save();
-    await target.save();
-
-    res.json({ message: 'Unfollowed successfully' });
-  } catch (err) {
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-
-
 
 module.exports = router;
